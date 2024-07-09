@@ -1,2 +1,0 @@
-# InternRFC
-intern management system
