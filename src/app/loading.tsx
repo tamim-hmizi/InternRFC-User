@@ -1,7 +1,3 @@
-export default function Loading() {
-  return (
-    <div className="relative w-full h-full flex justify-center items-center">
-      <span className="loading loading-spinner text-primary"></span>
-    </div>
-  );
+export default function loading() {
+  return <span className="loading loading-spinner loading-lg"></span>;
 }

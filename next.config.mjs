@@ -6,13 +6,11 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "img.daisyui.com",
-        port: "",
         pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "w3.org",
-        port: "",
         pathname: "/**",
       },
     ],

@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Footer from "@/components/footer/Footer";
 import Navbar from "@/components/navbar/Navbar";
+import Footer from "@/components/footer/Footer";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "InternRFC",
-  description: "Intern management system",
+  title: {
+    default: "interRFC",
+    template: "%s | interRFC",
+  },
+  description: "interRFC website for inter management",
 };
 
 export default function RootLayout({
@@ -17,13 +21,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.className} min-h-screen flex justify-center items-center flex-col`}
-      >
+      <body className={`${inter.className} flex flex-col min-h-screen`}>
         <Navbar />
-        <div className="flex-grow flex flex-col justify-center items-center">
+        <main className="flex-grow flex flex-col items-center justify-center">
           {children}
-        </div>
+        </main>
         <Footer />
       </body>
     </html>
