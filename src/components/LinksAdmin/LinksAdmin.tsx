@@ -3,8 +3,8 @@ import Link from "next/link";
 export default function LinksAdmin({ changeStyles }: { changeStyles: string }) {
   const linksAdmin = [
     {
-      title: "Dashboard",
-      path: "/dashboard",
+      title: "Admin",
+      path: "/admin",
     },
   ];
 

@@ -1,11 +1,21 @@
+"use client";
+
 import { handleSignUp } from "@/lib/actions";
 import { InternshipType } from "@/lib/User";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useFormState } from "react-dom";
 
 export default function SignUpForm() {
+  const router = useRouter();
+  const [state, formAction] = useFormState(handleSignUp, undefined);
+  useEffect(() => {
+    state?.success && router.push("/login");
+  }, [state?.success, router]);
   return (
     <form
-      action={handleSignUp}
+      action={formAction}
       className="card bg-neutral text-neutral-content w-96"
     >
       <div className="card-body items-center text-center">
@@ -137,12 +147,12 @@ export default function SignUpForm() {
             <option value={InternshipType.PFE}>PFE</option>
           </select>
         </label>
-
+        {state?.error && <p className="text-error text-sm">{state.error}</p>}
         <div className="card-actions justify-end">
           <button type="submit" className="btn btn-primary">
             S&apos;inscrire
           </button>
-          <Link href="login">
+          <Link href="/login">
             <button className="btn btn-ghost">Connexion</button>
           </Link>
         </div>

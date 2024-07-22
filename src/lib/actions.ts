@@ -1,18 +1,18 @@
 "use server";
-
 import { signIn, signOut } from "./auth";
 import { addUserWithImageFile, getUserByEmail } from "./data";
 import { ROLE, User, InternshipType } from "./User";
+import bcrypt from "bcryptjs";
 
 export const handleGithubLogIn = async (formData: FormData) => {
-  await signIn("github");
+  await signIn("github", { redirectTo: "/" });
 };
 
 export const handleLogOut = async (FormData: FormData) => {
-  await signOut();
+  await signOut({ redirectTo: "/" });
 };
 
-export const handleSignUp = async (formData: FormData) => {
+export const handleSignUp = async (previousState: any, formData: FormData) => {
   try {
     const {
       name,
@@ -30,7 +30,7 @@ export const handleSignUp = async (formData: FormData) => {
     const CVFile = formData.get("CV") as File | null;
 
     const existingUser = await getUserByEmail(email as string);
-    if (existingUser) return "User already exists";
+    if (existingUser) return { error: "Email deja utilisé!" };
 
     // Convert internshipType to enum
     const internshipTypeEnum =
@@ -44,10 +44,13 @@ export const handleSignUp = async (formData: FormData) => {
       ? parseInt(internshipDuration as string, 10)
       : null;
 
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password as string, salt);
+
     const newUser: User = {
       name: name as string,
       email: email as string,
-      password: password as string,
+      password: hashedPassword as string,
       address: address as string,
       role: ROLE.INTERN,
       image: image as string,
@@ -55,10 +58,32 @@ export const handleSignUp = async (formData: FormData) => {
       internshipStartDate: parsedInternshipStartDate,
       internshipDuration: parsedInternshipDuration,
       internshipType: internshipTypeEnum,
+      supervisor: null,
     };
 
     await addUserWithImageFile(newUser, imageFile as File, CVFile as File);
-  } catch (error) {
+
+    return { success: true };
+  } catch (error: any) {
+    return { error: "Erreur d'inscription!" };
+  }
+};
+
+export const handleLogIn = async (previousState: any, formData: FormData) => {
+  try {
+    const { email, password } = Object.fromEntries(formData.entries());
+    await signIn("credentials", {
+      email: email as string,
+      password: password as string,
+      redirectTo: "/",
+    });
+    return { success: true };
+  } catch (error: any) {
+    if (
+      error.message ===
+      "Read more at https://errors.authjs.dev#callbackrouteerror"
+    )
+      return { error: "Email ou mot de passe incorrect" };
     throw error;
   }
 };

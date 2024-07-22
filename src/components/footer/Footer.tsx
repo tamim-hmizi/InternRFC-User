@@ -9,7 +9,7 @@ export default function Footer() {
           height={100}
           alt="internRFC website logo image."
         />
-        <p>Copyright © ${new Date().getFullYear()} - All right reserved</p>
+        <p>Copyright © {new Date().getFullYear()} - Tous droits réservés</p>
       </aside>
       <nav className="grid-flow-col gap-4 md:place-self-center md:justify-self-end">
         <a>

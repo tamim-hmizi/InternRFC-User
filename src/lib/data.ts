@@ -48,6 +48,7 @@ const createUserItem = (
   internshipStartDate: user.internshipStartDate?.toISOString() || null,
   internshipDuration: user.internshipDuration || null,
   internshipType: user.internshipType || null,
+  supervisor: null,
 });
 
 export const addUserWithImageFile = async (

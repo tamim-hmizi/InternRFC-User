@@ -1,16 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  crossOrigin: "anonymous",
   images: {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "img.daisyui.com",
+        hostname: "internrfc-bucket.s3.amazonaws.com",
         pathname: "/**",
       },
       {
         protocol: "https",
-        hostname: "w3.org",
+        hostname: "avatars.githubusercontent.com",
         pathname: "/**",
       },
     ],

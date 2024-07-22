@@ -1,7 +1,11 @@
-import { handleGithubLogIn } from "@/lib/actions";
+"use client";
+
+import { handleGithubLogIn, handleLogIn } from "@/lib/actions";
 import Link from "next/link";
+import { useFormState } from "react-dom";
 
 export default function LoginForm() {
+  const [state, formAction] = useFormState(handleLogIn, undefined);
   return (
     <div className="flex flex-col gap-5">
       <form
@@ -9,10 +13,16 @@ export default function LoginForm() {
         action={handleGithubLogIn}
       >
         <div className="card-body items-center text-center">
-          <button className="btn">Connexion avec Github</button>
+          <button type="submit" className="btn">
+            Connexion avec Github
+          </button>
         </div>
       </form>
-      <form className="card bg-neutral text-neutral-content w-96">
+
+      <form
+        className="card bg-neutral text-neutral-content w-96"
+        action={formAction}
+      >
         <div className="card-body items-center text-center">
           <h2 className="card-title">Connexion</h2>
           <label className="input input-bordered flex items-center gap-2">
@@ -52,11 +62,12 @@ export default function LoginForm() {
               placeholder="Mot de passe"
             />
           </label>
+          {state?.error && <p className="text-error">{state.error}</p>}
           <div className="card-actions justify-end">
             <button type="submit" className="btn btn-primary">
               Connexion
             </button>
-            <Link href="register" className="btn btn-ghost">
+            <Link href="/register" className="btn btn-ghost">
               Inscription
             </Link>
           </div>

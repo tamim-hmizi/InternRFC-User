@@ -14,6 +14,10 @@ export default function Links({ changeStyles }: { changeStyles: string }) {
       title: "Contact",
       path: "/contact",
     },
+    {
+      title: "Projet",
+      path: "/user/projet",
+    },
   ];
 
   return (
