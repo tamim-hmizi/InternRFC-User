@@ -6,10 +6,8 @@ import { handleLogOut } from "@/lib/actions";
 import { auth } from "@/lib/auth";
 import { ROLE } from "@/lib/User";
 import UserLinks from "../UserLinks/UserLinks";
-
 export default async function Navbar() {
   const session = await auth();
-
   const isAdmin = session?.user?.role === ROLE.ADMIN;
   return (
     <div className="navbar bg-base-100">

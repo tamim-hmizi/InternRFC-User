@@ -1,15 +1,15 @@
 "use server";
-import { signIn, signOut } from "./auth";
-import { addUserWithImageFile, getUserByEmail } from "./data";
+import { auth, signIn, signOut } from "./auth";
+import { addUserWithImageFile, getUserByEmail, updateUser } from "./data";
 import { ROLE, User, InternshipType } from "./User";
 import bcrypt from "bcryptjs";
 
 export const handleGithubLogIn = async (formData: FormData) => {
-  await signIn("github", { redirectTo: "/" });
+  await signIn("github", { redirectTo: "/home" });
 };
 
 export const handleLogOut = async (FormData: FormData) => {
-  await signOut({ redirectTo: "/" });
+  await signOut({ redirectTo: "/home" });
 };
 
 export const handleSignUp = async (previousState: any, formData: FormData) => {
@@ -75,7 +75,7 @@ export const handleLogIn = async (previousState: any, formData: FormData) => {
     await signIn("credentials", {
       email: email as string,
       password: password as string,
-      redirectTo: "/",
+      redirectTo: "/home",
     });
     return { success: true };
   } catch (error: any) {
@@ -85,5 +85,52 @@ export const handleLogIn = async (previousState: any, formData: FormData) => {
     )
       return { error: "Email ou mot de passe incorrect" };
     throw error;
+  }
+};
+
+export const handleProfileUpdate = async (
+  previousState: any,
+  formData: FormData
+) => {
+  try {
+    const {
+      name,
+      password,
+      address,
+      internshipStartDate,
+      internshipDuration,
+      internshipType,
+    } = Object.fromEntries(formData.entries());
+
+    const newImageFile = formData.get("image") as File | null;
+    const newCvFile = formData.get("CV") as File | null;
+    const updates: Partial<User> = {};
+    if (name) updates.name = name as string;
+    if (address) updates.address = address as string;
+    if (internshipStartDate) {
+      updates.internshipStartDate = new Date(internshipStartDate as string);
+    }
+    if (internshipDuration) {
+      updates.internshipDuration = parseInt(internshipDuration as string, 10);
+    }
+    if (internshipType) {
+      updates.internshipType =
+        InternshipType[internshipType as keyof typeof InternshipType];
+    }
+
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      updates.password = await bcrypt.hash(password as string, salt);
+    }
+    const session = await auth();
+    await updateUser(
+      session?.user.email as string,
+      updates,
+      newImageFile as File,
+      newCvFile as File
+    );
+    return { success: true };
+  } catch (error: any) {
+    return { error: "Modification du profile aboutie!" };
   }
 };

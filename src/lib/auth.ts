@@ -1,10 +1,28 @@
 import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import { ROLE, User } from "./User";
+import { InternshipType, ROLE, User } from "./User";
 import { addUserWithoutImageFile, getUserByEmail } from "./data";
-import NextAuth from "next-auth";
+import NextAuth, { DefaultSession } from "next-auth";
 import { authConfig } from "./auth.config";
+
+declare module "next-auth" {
+  interface Session {
+    user: {
+      name: string | undefined | null;
+      email: string | undefined | null;
+      password: string | null;
+      address: string | null;
+      role: ROLE;
+      image: string | undefined | null;
+      CV: string | null;
+      internshipStartDate: Date | null;
+      internshipDuration: number | null;
+      internshipType: InternshipType | null;
+      supervisor: string | null;
+    } & DefaultSession["user"];
+  }
+}
 
 export const {
   handlers: { GET, POST },
@@ -72,6 +90,18 @@ export const {
         }
       }
       return true;
+    },
+    async jwt({ token }) {
+      return token;
+    },
+    async session({ session, token }) {
+      const currentUser = await getUserByEmail(token.email as string);
+      return {
+        ...session,
+        user: {
+          ...currentUser,
+        },
+      };
     },
     ...authConfig.callbacks,
   },

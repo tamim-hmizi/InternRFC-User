@@ -1,5 +1,5 @@
 "use client";
-export default function error() {
+export default function erreur() {
   return (
     <div role="alert" className="alert alert-error max-w-40">
       <svg
@@ -15,7 +15,7 @@ export default function error() {
           d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
         />
       </svg>
-      <span>Error! Task failed successfully.</span>
+      <span>Erreur ! La tâche a échoué avec succès.</span>
     </div>
   );
 }

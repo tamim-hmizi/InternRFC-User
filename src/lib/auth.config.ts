@@ -1,14 +1,6 @@
 import { NextRequest } from "next/server";
-import { DefaultSession, Session } from "next-auth";
+import { Session } from "next-auth";
 import { ROLE } from "./User";
-
-declare module "next-auth" {
-  interface Session {
-    user: {
-      role: ROLE;
-    } & DefaultSession["user"];
-  }
-}
 
 export const authConfig = {
   pages: {
@@ -16,20 +8,6 @@ export const authConfig = {
   },
   providers: [],
   callbacks: {
-    async jwt({ token, user }: { token: any; user: any }) {
-      if (user) {
-        token.id = user.email;
-        token.role = user.role;
-      }
-      return token;
-    },
-    async session({ session, token }: { session: any; token: any }) {
-      if (token) {
-        session.user.id = token.id;
-        session.user.role = token.role;
-      }
-      return session;
-    },
     authorized({
       request,
       auth,
@@ -64,9 +42,8 @@ export const authConfig = {
       if (isOnUserRoute && !user) return false;
 
       if (isOnUnAuthenticatedRoute && user) {
-        return Response.redirect(new URL("/", request.nextUrl));
+        return Response.redirect(new URL("/home", request.nextUrl));
       }
-
       return true;
     },
   },

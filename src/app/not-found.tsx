@@ -4,11 +4,13 @@ export default function NotFound() {
   return (
     <div className="card bg-neutral text-neutral-content w-96">
       <div className="card-body items-center text-center">
-        <h2 className="card-title">Not Found!</h2>
-        <p>Sorry, the page you are looking for does not exist.</p>
+        <h2 className="card-title">Page non trouvée !</h2>
+        <p>Désolé, la page que vous recherchez n&apos;existe pas.</p>
         <div className="card-actions justify-end">
-          <Link href="/">
-            <button className="btn btn-primary">Return to homepage</button>
+          <Link href="/home">
+            <button className="btn btn-primary">
+              Retour à la page d&apos;accueil
+            </button>
           </Link>
         </div>
       </div>
