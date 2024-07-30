@@ -92,14 +92,29 @@ export const {
       return true;
     },
     async jwt({ token }) {
+      const user = await getUserByEmail(token.email as string);
+      if (user) {
+        token.user = {
+          name: user.name,
+          email: user.email,
+          address: user.address,
+          role: user.role,
+          image: user.image,
+          CV: user.CV,
+          internshipStartDate: user.internshipStartDate,
+          internshipDuration: user.internshipDuration,
+          internshipType: user.internshipType,
+          supervisor: user.supervisor,
+        };
+      }
       return token;
     },
     async session({ session, token }) {
-      const currentUser = await getUserByEmail(token.email as string);
+      const user: User = token.user as User;
       return {
         ...session,
         user: {
-          ...currentUser,
+          ...user,
         },
       };
     },

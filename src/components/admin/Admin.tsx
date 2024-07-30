@@ -1,3 +1,14 @@
+import Image from "next/image";
+
 export default function Admin() {
-  return <div>Admin</div>;
+  return (
+    <>
+      <Image
+        src="/images/admin.png"
+        width={500}
+        height={500}
+        alt="admin welcome picture"
+      />
+    </>
+  );
 }

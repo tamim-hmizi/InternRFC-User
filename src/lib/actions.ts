@@ -1,6 +1,11 @@
 "use server";
 import { auth, signIn, signOut } from "./auth";
-import { addUserWithImageFile, getUserByEmail, updateUser } from "./data";
+import {
+  addUserWithImageFile,
+  deleteUser,
+  getUserByEmail,
+  updateUser,
+} from "./data";
 import { ROLE, User, InternshipType } from "./User";
 import bcrypt from "bcryptjs";
 
@@ -72,10 +77,14 @@ export const handleSignUp = async (previousState: any, formData: FormData) => {
 export const handleLogIn = async (previousState: any, formData: FormData) => {
   try {
     const { email, password } = Object.fromEntries(formData.entries());
+    const currentUser = await getUserByEmail(email as string);
+    if (!currentUser) return { error: "Email ou mot de passe incorrect" };
+    let redirectingTo = "/home";
+    if (currentUser.role === ROLE.ADMIN) redirectingTo == "/admin";
     await signIn("credentials", {
       email: email as string,
       password: password as string,
-      redirectTo: "/home",
+      redirectTo: redirectingTo,
     });
     return { success: true };
   } catch (error: any) {
@@ -132,5 +141,16 @@ export const handleProfileUpdate = async (
     return { success: true };
   } catch (error: any) {
     return { error: "Modification du profile aboutie!" };
+  }
+};
+
+export const handleDeleteAccount = async (formData: FormData) => {
+  try {
+    const { email } = Object.fromEntries(formData.entries());
+    await deleteUser(email as string);
+    return handleLogOut(formData);
+  } catch (error: any) {
+    console.error("Failed to delete account:", error);
+    return { error: "Failed to delete account. Please try again later." };
   }
 };

@@ -4,6 +4,8 @@ import {
   GetCommand,
   DynamoDBDocumentClient,
   UpdateCommand,
+  DeleteCommand,
+  ScanCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { User } from "./User";
@@ -16,7 +18,7 @@ const s3Client = new S3Client({});
 const dynamoDbClient = new DynamoDBClient({ region: REGION });
 const docClient = DynamoDBDocumentClient.from(dynamoDbClient);
 
-const uploadFileToS3 = async (
+export const uploadFileToS3 = async (
   file: File,
   userId: string,
   fileType: "image" | "cv"
@@ -35,7 +37,7 @@ const uploadFileToS3 = async (
   return `https://${S3_BUCKET_NAME}.s3.amazonaws.com/${key}`;
 };
 
-const createUserItem = (
+export const createUserItem = (
   user: User,
   imageUrl: string | null | undefined,
   cvUrl: string | null | undefined
@@ -56,7 +58,7 @@ const createUserItem = (
 export const addUserWithImageFile = async (
   user: User,
   imageFile: File,
-  cvFile: File
+  cvFile?: File
 ) => {
   let imageUrl: string | null = null;
   let cvUrl: string | null = null;
@@ -111,7 +113,7 @@ export const getUserByEmail = async (
   }
 };
 
-const deleteFileFromS3 = async (key: string) => {
+export const deleteFileFromS3 = async (key: string) => {
   const command = new DeleteObjectCommand({
     Bucket: S3_BUCKET_NAME,
     Key: key,
@@ -121,7 +123,7 @@ const deleteFileFromS3 = async (key: string) => {
 
 export const updateUser = async (
   email: string,
-  updates: Partial<User>,
+  updates: Partial<User> | User,
   newImageFile?: File,
   newCvFile?: File
 ) => {
@@ -208,6 +210,66 @@ export const updateUser = async (
       Key: { email },
       UpdateExpression: updateExpression,
       ExpressionAttributeNames: expressionAttributeNames,
+      ExpressionAttributeValues: expressionAttributeValues,
+      ReturnValues: "UPDATED_NEW",
+    });
+
+    const response = await docClient.send(command);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteUser = async (email: string) => {
+  try {
+    const currentUser = await getUserByEmail(email);
+    if (currentUser && currentUser.image) {
+      const imageKey = currentUser.image.split("/").slice(-2).join("/");
+      await deleteFileFromS3(imageKey);
+    }
+    if (currentUser && currentUser.CV) {
+      const cvKey = currentUser.CV.split("/").slice(-2).join("/");
+      await deleteFileFromS3(cvKey);
+    }
+    const command = new DeleteCommand({
+      TableName: TABLE_NAME,
+      Key: { email },
+    });
+    const response = await docClient.send(command);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+export const getAllUsers = async (): Promise<User[]> => {
+  try {
+    const command = new ScanCommand({
+      TableName: TABLE_NAME,
+    });
+    const response = await docClient.send(command);
+    return response.Items as User[];
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateIntern = async (email: string, newSupervisor: string) => {
+  try {
+    const currentUser = await getUserByEmail(email);
+    if (!currentUser) {
+      throw new Error("User not found");
+    }
+
+    const updateExpression = "set supervisor = :supervisor";
+    const expressionAttributeValues = {
+      ":supervisor": newSupervisor,
+    };
+
+    const command = new UpdateCommand({
+      TableName: TABLE_NAME,
+      Key: { email },
+      UpdateExpression: updateExpression,
       ExpressionAttributeValues: expressionAttributeValues,
       ReturnValues: "UPDATED_NEW",
     });

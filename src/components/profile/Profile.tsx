@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { handleProfileUpdate } from "@/lib/actions";
+import { handleDeleteAccount, handleProfileUpdate } from "@/lib/actions";
 import { User, InternshipType } from "@/lib/User";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -9,7 +9,6 @@ import { useFormState } from "react-dom";
 
 export default function Profile({ currentUser }: { currentUser: User }) {
   const [isEditing, setIsEditing] = useState(false);
-
   const handleToggleEdit = () => setIsEditing(!isEditing);
 
   const router = useRouter();
@@ -17,7 +16,7 @@ export default function Profile({ currentUser }: { currentUser: User }) {
   const [state, formAction] = useFormState(handleProfileUpdate, undefined);
 
   useEffect(() => {
-    state?.success && router.push("/home");
+    state?.success && router.refresh();
   }, [state?.success, router]);
 
   return (
@@ -203,16 +202,23 @@ export default function Profile({ currentUser }: { currentUser: User }) {
                   <strong>Encadrant :</strong>{" "}
                   {currentUser?.supervisor || "Encadrant non affecté"}
                 </p>
-                <button
-                  className="btn btn-secondary"
-                  onClick={handleToggleEdit}
-                >
+                <button className="btn btn-primary" onClick={handleToggleEdit}>
                   Modifier
                 </button>
               </div>
             )}
           </div>
         </div>
+      </form>
+      <form className="space-y-5" action={handleDeleteAccount}>
+        <input
+          type="hidden"
+          name="email"
+          value={currentUser?.email as string}
+        />
+        <button type="submit" className="btn btn-secondary w-max">
+          Supprimer compte
+        </button>
       </form>
     </div>
   );

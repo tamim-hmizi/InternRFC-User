@@ -6,9 +6,12 @@ import { handleLogOut } from "@/lib/actions";
 import { auth } from "@/lib/auth";
 import { ROLE } from "@/lib/User";
 import UserLinks from "../UserLinks/UserLinks";
+
 export default async function Navbar() {
   const session = await auth();
   const isAdmin = session?.user?.role === ROLE.ADMIN;
+  const logoLink = isAdmin ? "/admin" : "/";
+  
   return (
     <div className="navbar bg-base-100">
       <div className="navbar-start">
@@ -39,7 +42,7 @@ export default async function Navbar() {
             )}
           </div>
         </div>
-        <Link href="/home" className="btn btn-ghost text-xl">
+        <Link href={logoLink} className="btn btn-ghost text-xl">
           <Image
             src="/images/logo.png"
             width={50}
@@ -88,9 +91,11 @@ export default async function Navbar() {
               )}
             </div>
             <ul className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-              <li>
-                <Link href="/profile">Profile</Link>
-              </li>
+              {!isAdmin && (
+                <li>
+                  <Link href="/profile">Profile</Link>
+                </li>
+              )}
               <li>
                 <form className="w-full" action={handleLogOut}>
                   <button>Logout</button>

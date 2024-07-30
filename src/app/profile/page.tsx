@@ -1,10 +1,15 @@
 import Profile from "@/components/profile/Profile";
-import { getUserByEmail } from "@/lib/data";
 import { User } from "@/lib/User";
 import { auth } from "@/middleware";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Profile",
+  description: "Profile",
+};
 
 export default async function page() {
   const session = await auth();
-  const currentUser = await getUserByEmail(session?.user?.email as string);
+  const currentUser = session?.user;
   return <Profile currentUser={currentUser as User} />;
 }

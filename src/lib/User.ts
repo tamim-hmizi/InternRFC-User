@@ -4,9 +4,9 @@ export enum InternshipType {
   PFE,
 }
 export enum ROLE {
-  SUPERVISER = 0,
   INTERN = 1,
   ADMIN = 2,
+  SUPERVISER = 3,
 }
 
 export interface User {

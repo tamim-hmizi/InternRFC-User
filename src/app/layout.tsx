@@ -8,10 +8,10 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: {
-    default: "interRFC",
-    template: "%s | interRFC",
+    default: "internRFC",
+    template: "%s | internRFC",
   },
-  description: "interRFC website for inter management",
+  description: "interRFC website for intern management",
 };
 
 export default function RootLayout({
