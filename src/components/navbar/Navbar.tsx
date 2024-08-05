@@ -6,11 +6,13 @@ import { handleLogOut } from "@/lib/actions";
 import { auth } from "@/lib/auth";
 import { ROLE } from "@/lib/User";
 import UserLinks from "../UserLinks/UserLinks";
+import { redirect } from "next/navigation";
 
 export default async function Navbar() {
   const session = await auth();
   const isAdmin = session?.user?.role === ROLE.ADMIN;
   const logoLink = isAdmin ? "/admin" : "/";
+   
   
   return (
     <div className="navbar bg-base-100">

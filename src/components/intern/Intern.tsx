@@ -144,7 +144,7 @@ export default function Intern() {
                 <td>{user.address}</td>
                 <th>
                   {user.CV ? (
-                    <Link href={user.CV as string}>
+                    <Link target="_blank" href={user.CV as string}>
                       <button className="btn">detail</button>
                     </Link>
                   ) : (

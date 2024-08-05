@@ -128,7 +128,7 @@ export default function Supervisor() {
               <th>Image</th>
               <th>Email</th>
               <th>Adresse</th>
-              <th>Mot de passe</th>
+              
               <th>Actions</th>
             </tr>
           </thead>
@@ -165,7 +165,7 @@ export default function Supervisor() {
                   <div className="text-sm opacity-50">{user.email}</div>
                 </td>
                 <td>{user.address}</td>
-                <td>{user.password}</td>
+                
                 <th>
                   <button
                     onClick={() => handleEdit(user)}

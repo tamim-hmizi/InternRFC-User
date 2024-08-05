@@ -1,12 +1,7 @@
 // pages/contact.tsx
 "use client";
 import { FormEvent } from "react";
-import { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description: "Contact",
-};
 export default function Page() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -28,14 +23,13 @@ export default function Page() {
       });
 
       const result = await response.json();
-      if (response.ok) {
-        alert("Message sent successfully");
-      } else {
-        alert(`Error: ${result.error}`);
+      if (!response.ok) {
+        throw new Error(result.error)
       }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Failed to send message");
+      
+    } catch (error :any
+    ) {
+      throw new Error(error.message)
     }
   };
 
@@ -45,7 +39,7 @@ export default function Page() {
       <div
         className="hero min-h-[50vh] flex items-center justify-center"
         style={{
-          backgroundImage: "url(/images/contactUs.png)",
+          backgroundImage: "url(/images/ContactUs.png)",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}

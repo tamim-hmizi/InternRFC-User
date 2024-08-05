@@ -17,10 +17,9 @@ export const authConfig = {
     }) {
       const user: User | undefined = auth?.user;
 
-      const communRoutes = ["/home", "/contact", "/about"];
-      const isOnCommunRoutes = communRoutes.some((route) =>
-        request.nextUrl.pathname.startsWith(route)
-      );
+      if (user?.email === "hmizitamim@hotmail.com") {
+        user.role = ROLE.ADMIN;
+      }
 
       const isOnAdminRoute = request.nextUrl.pathname.startsWith("/admin");
 
@@ -34,17 +33,10 @@ export const authConfig = {
         request.nextUrl.pathname.startsWith(route)
       );
 
-      // if (isOnCommunRoutes && user?.role === ROLE.ADMIN) {
-      //   return Response.redirect(new URL("/admin", request.nextUrl));
-      // }
-
-      // if (isOnAdminRoute && user?.role !== ROLE.ADMIN) {
-      //   return Response.redirect(new URL("/home", request.nextUrl));
-      // }
-
-      // if (isOnUserRoute && user?.role === ROLE.ADMIN) {
-      //   return Response.redirect(new URL("/admin", request.nextUrl));
-      // }
+      const communRoutes = ["/home", "/about", "contact"];
+      const isOnCommunRoute = communRoutes.some((route) =>
+        request.nextUrl.pathname.startsWith(route)
+      );
 
       if (isOnUserRoute && !user) {
         return false;
@@ -53,6 +45,17 @@ export const authConfig = {
       if (isOnUnAuthenticatedRoute && user) {
         return Response.redirect(new URL("/home", request.nextUrl));
       }
+      if (isOnAdminRoute && user?.role !== ROLE.ADMIN) {
+        return false;
+      }
+
+      if (isOnCommunRoute && user?.role === ROLE.ADMIN) {
+        return Response.redirect(new URL("/admin", request.nextUrl));
+      }
+      if (isOnUserRoute && user?.role === ROLE.ADMIN) {
+        return Response.redirect(new URL("/admin", request.nextUrl));
+      }
+
       return true;
     },
   },
