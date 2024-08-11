@@ -1,4 +1,4 @@
-import { deleteUser, updateUser } from "@/lib/data";
+import { deleteUser, getUserByEmail, updateUser, updateUsersSupervisorToNull } from "@/lib/data";
 import { InternshipType, ROLE, User } from "@/lib/User";
 import bcrypt from "bcryptjs";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
@@ -10,7 +10,17 @@ export const DELETE = async (
 ) => {
   try {
     const { email } = params;
+
+    // Check if the user to be deleted is a supervisor
+    const user = await getUserByEmail(email);
+    if (user && user.role === ROLE.SUPERVISER) {
+      // Update users' supervisor attribute to null if this supervisor is deleted
+      await updateUsersSupervisorToNull(email);
+    }
+
+    // Proceed to delete the user
     await deleteUser(email);
+
     return NextResponse.json(
       { message: "User deleted successfully" },
       { status: 200 }
@@ -71,3 +81,5 @@ export const PUT = async (
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
 };
+
+

@@ -213,8 +213,10 @@ export default function Intern() {
                     onChange={handleChange}
                   >
                     <option value="" disabled hidden>
-                      Supervisor
+                      Superviseur
                     </option>
+                    <option value="aucun superviseur">Aucun superviseur</option>{" "}
+                    {/* Added option */}
                     {supervisors.map((supervisor) => (
                       <option
                         key={supervisor.email}

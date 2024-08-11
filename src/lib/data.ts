@@ -21,7 +21,6 @@ const REGION = process.env.REGION!;
 const AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY!;
 const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY!;
 
-
 const s3Client = new S3Client({
   region: REGION,
   credentials: {
@@ -30,7 +29,6 @@ const s3Client = new S3Client({
   },
 });
 
-
 const dynamoDbClient = new DynamoDBClient({
   region: REGION,
   credentials: {
@@ -38,7 +36,6 @@ const dynamoDbClient = new DynamoDBClient({
     secretAccessKey: AWS_SECRET_ACCESS_KEY,
   },
 });
-
 
 const docClient = DynamoDBDocumentClient.from(dynamoDbClient);
 
@@ -278,7 +275,11 @@ export const getAllUsers = async (): Promise<User[]> => {
   }
 };
 
-export const updateIntern = async (email: string, newSupervisor: string) => {
+export const updateIntern = async (
+  email: string,
+  newSupervisor: string | null
+) => {
+  
   try {
     const currentUser = await getUserByEmail(email);
     if (!currentUser) {
@@ -299,7 +300,26 @@ export const updateIntern = async (email: string, newSupervisor: string) => {
     });
 
     const response = await docClient.send(command);
+    
     return response;
+  } catch (error) {
+    throw error;
+  }
+};
+export const updateUsersSupervisorToNull = async (supervisorEmail: string) => {
+  try {
+    // Get all users
+    const users = await getAllUsers();
+
+    // Filter users whose supervisor attribute matches the deleted supervisor's email
+    const usersToUpdate = users.filter(
+      (user) => user.supervisor === supervisorEmail
+    );
+
+    // Update each user's supervisor attribute to null
+    for (const user of usersToUpdate) {
+      await updateIntern(user.email!, null);
+    }
   } catch (error) {
     throw error;
   }

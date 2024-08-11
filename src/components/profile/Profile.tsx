@@ -193,7 +193,7 @@ export default function Profile({ currentUser }: { currentUser: User }) {
                 <p className="text-base md:text-lg">
                   <strong>CV :</strong>{" "}
                   {currentUser?.CV ? (
-                    <Link href={currentUser?.CV}>Voir CV</Link>
+                    <Link target="_blank" href={currentUser?.CV}>Voir CV</Link>
                   ) : (
                     "CV non partagée"
                   )}
