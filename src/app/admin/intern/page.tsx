@@ -2,8 +2,8 @@ import Intern from "@/components/intern/Intern";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Stagiere/Admin",
-  description: "Stagiere/Admin",
+  title: "Gestion des Stagiere",
+  description: "Gestion des Stagiere",
 };
 export default function page() {
   return (

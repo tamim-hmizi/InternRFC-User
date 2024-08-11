@@ -1,4 +1,3 @@
-// pages/contact.tsx
 "use client";
 import { FormEvent } from "react";
 
@@ -35,7 +34,7 @@ export default function Page() {
 
   return (
     <>
-      {/* Contact Hero Section */}
+      
       <div
         className="hero min-h-[50vh] flex items-center justify-center"
         style={{
@@ -58,7 +57,7 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Contact Form Section */}
+      
       <section className="my-16 px-4">
         <h2 className="text-4xl font-semibold text-center mb-12">
           Formulaire de Contact
@@ -94,7 +93,7 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Contact Details Section */}
+      
       <section className="my-16 px-4 bg-gray-100 py-12">
         <h2 className="text-4xl font-semibold text-center mb-12">
           Coordonnées

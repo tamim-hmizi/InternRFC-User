@@ -1,5 +1,5 @@
 import { ROLE } from "@/lib/User";
-import { auth } from "@/middleware";
+import { auth } from "@/auth";
 import Link from "next/link";
 
 export const metadata = {

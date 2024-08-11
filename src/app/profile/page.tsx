@@ -1,6 +1,6 @@
 import Profile from "@/components/profile/Profile";
 import { User } from "@/lib/User";
-import { auth } from "@/middleware";
+import { auth } from "@/auth";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

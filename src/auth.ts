@@ -1,25 +1,17 @@
-import GithubProvider from "next-auth/providers/github";
-import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import { InternshipType, ROLE, User } from "./User";
-import { addUserWithoutImageFile, getUserByEmail } from "./data";
+import { InternshipType, ROLE, User } from "./lib/User";
+import { addUserWithoutImageFile, getUserByEmail } from "./lib/data";
 import NextAuth, { DefaultSession } from "next-auth";
-import { authConfig } from "./auth.config";
+import Github from "next-auth/providers/github";
+import Credentials from "next-auth/providers/credentials";
 
 declare module "next-auth" {
   interface Session {
     user: {
       name: string | undefined | null;
       email: string | undefined | null;
-      password: string | null;
-      address: string | null;
       role: ROLE;
       image: string | undefined | null;
-      CV: string | null;
-      internshipStartDate: Date | null;
-      internshipDuration: number | null;
-      internshipType: InternshipType | null;
-      supervisor: string | null;
     } & DefaultSession["user"];
   }
 }
@@ -30,14 +22,14 @@ export const {
   signOut,
   auth,
 } = NextAuth({
-  ...authConfig,
   providers: [
-    GithubProvider({
-      clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_SECRET,
-    }),
-    CredentialsProvider({
-      async authorize(credentials) {
+    Github,
+    Credentials({
+      credentials: {
+        email: {},
+        password: {},
+      },
+      authorize: async (credentials) => {
         try {
           const existingUser = await getUserByEmail(
             credentials.email as string
@@ -64,7 +56,7 @@ export const {
     }),
   ],
   callbacks: {
-    async signIn({ user, account }) {
+    signIn: async ({ user, account }) => {
       if (account?.provider === "github") {
         try {
           const existingUser = await getUserByEmail(user.email as string);
@@ -91,33 +83,28 @@ export const {
       }
       return true;
     },
-    async jwt({ token }) {
+    jwt: async ({ token }) => {
       const user = await getUserByEmail(token.email as string);
       if (user) {
         token.user = {
           name: user.name,
           email: user.email,
-          address: user.address,
           role: user.role,
           image: user.image,
-          CV: user.CV,
-          internshipStartDate: user.internshipStartDate,
-          internshipDuration: user.internshipDuration,
-          internshipType: user.internshipType,
-          supervisor: user.supervisor,
         };
       }
       return token;
     },
-    async session({ session, token }) {
+    session: async ({ session, token }) => {
       const user: User = token.user as User;
+
       return {
         ...session,
         user: {
+          ...session.user,
           ...user,
         },
       };
     },
-    ...authConfig.callbacks,
   },
 });

@@ -12,16 +12,16 @@ export async function POST(request: Request) {
       );
     }
 
-    // Configure Nodemailer transport
+   
     const transporter = nodemailer.createTransport({
-      service: "Gmail", // Use your email service provider
+      service: "Gmail",
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
     });
 
-    // Compose email
+   
     const mailOptions = {
       from: email,
       to: process.env.RECIPIENT_EMAIL,
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
       html: `<p><strong>Name:</strong> ${name}</p><p><strong>Email:</strong> ${email}</p><p><strong>Message:</strong><br>${message}</p>`,
     };
 
-    // Send email
+
     await transporter.sendMail(mailOptions);
 
     return NextResponse.json({ message: "Message sent successfully" });

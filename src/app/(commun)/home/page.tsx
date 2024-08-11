@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <>
-      {/* Hero Section */}
+      
       <div
         className="hero min-h-[50vh] flex items-center justify-center" // Adjust the height of the hero section and center content
         style={{
@@ -38,7 +38,7 @@ export default function Page() {
         </div>
       </div>
 
-      {/* What We Do Section */}
+      
       <section className="my-16 px-4">
         <h2 className="text-4xl font-semibold text-center mb-12">
           Ce Que Nous Faisons
@@ -71,7 +71,7 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Our Values Section */}
+     
       <section className="my-16 px-4  py-12">
         <h2 className="text-4xl font-semibold text-center mb-12">
           Nos Valeurs
@@ -102,7 +102,7 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Testimonials Section */}
+     
       <section className="my-16 px-4">
         <h2 className="text-4xl font-semibold text-center mb-12">
           Témoignages

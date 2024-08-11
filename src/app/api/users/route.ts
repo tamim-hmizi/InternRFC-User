@@ -3,9 +3,7 @@ import {
   addUserWithImageFile,
   addUserWithoutImageFile,
   getAllUsers,
-  
   updateIntern,
-  
 } from "@/lib/data";
 import { InternshipType, ROLE, User } from "@/lib/User";
 import { NextRequest, NextResponse } from "next/server";
@@ -70,11 +68,10 @@ export const PUT = async (request: NextRequest) => {
     const email = data.get("email") as string;
     const supervisor = data.get("supervisor") as string;
 
-    const result = await updateIntern(email, supervisor);
-    console.log(result);
+    await updateIntern(email, supervisor);
+
     return NextResponse.json({ message: "User updated successfully" });
   } catch (error: any) {
-    console.error("Error:", error);
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
 };

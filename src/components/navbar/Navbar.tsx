@@ -3,10 +3,10 @@ import Link from "next/link";
 import Image from "next/image";
 import LinksAdmin from "../LinksAdmin/LinksAdmin";
 import { handleLogOut } from "@/lib/actions";
-import { auth } from "@/lib/auth";
+import { auth } from "@/auth";
 import { ROLE } from "@/lib/User";
 import UserLinks from "../UserLinks/UserLinks";
-import { redirect } from "next/navigation";
+
 
 export default async function Navbar() {
   const session = await auth();

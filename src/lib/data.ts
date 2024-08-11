@@ -7,15 +7,39 @@ import {
   DeleteCommand,
   ScanCommand,
 } from "@aws-sdk/lib-dynamodb";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import {
+  S3Client,
+  PutObjectCommand,
+  DeleteObjectCommand,
+} from "@aws-sdk/client-s3";
 import { User } from "./User";
-import { DeleteObjectCommand } from "@aws-sdk/client-s3";
+
 const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME!;
 const TABLE_NAME = process.env.TABLE_NAME!;
 const REGION = process.env.REGION!;
 
-const s3Client = new S3Client({});
-const dynamoDbClient = new DynamoDBClient({ region: REGION });
+const AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY!;
+const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY!;
+
+
+const s3Client = new S3Client({
+  region: REGION,
+  credentials: {
+    accessKeyId: AWS_ACCESS_KEY,
+    secretAccessKey: AWS_SECRET_ACCESS_KEY,
+  },
+});
+
+
+const dynamoDbClient = new DynamoDBClient({
+  region: REGION,
+  credentials: {
+    accessKeyId: AWS_ACCESS_KEY,
+    secretAccessKey: AWS_SECRET_ACCESS_KEY,
+  },
+});
+
+
 const docClient = DynamoDBDocumentClient.from(dynamoDbClient);
 
 export const uploadFileToS3 = async (
