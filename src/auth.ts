@@ -22,8 +22,12 @@ export const {
   signOut,
   auth,
 } = NextAuth({
+  trustHost: true,
   providers: [
-    Github,
+    Github({
+      clientId: process.env.AUTH_GITHUB_ID,
+      clientSecret: process.env.AUTH_GITHUB_SECRET,
+    }),
     Credentials({
       credentials: {
         email: {},
